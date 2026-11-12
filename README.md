@@ -1,4 +1,4 @@
-# Superstore-Sales-Profitability-Analysis
+Superstore Profitability & Discount Impact Analysis
 Retail Sales Analysis using Python, MySQL and Power BI
 
  📌 Project Overview
