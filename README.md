@@ -1,7 +1,6 @@
-#Superstore Profitability & Discount Impact Analysis
-Retail Sales Analysis using Python, MySQL and Power BI
+Superstore Profitability & Discount Impact Analysis
 
- 📌 Project Overview
+📌 Project Overview
 
 This project focuses on analyzing retail sales data to identify business performance, profitability trends, loss-making products, and opportunities for improving business decisions.
 
