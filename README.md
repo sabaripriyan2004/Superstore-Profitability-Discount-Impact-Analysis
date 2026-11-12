@@ -1,4 +1,4 @@
-Superstore Profitability & Discount Impact Analysis
+#Superstore Profitability & Discount Impact Analysis
 
 📌 Project Overview
 
