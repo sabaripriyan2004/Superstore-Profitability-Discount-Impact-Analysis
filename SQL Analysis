@@ -164,3 +164,74 @@ SELECT Segment,
 FROM superstore
 GROUP BY Segment
 ORDER BY margin_pct DESC;
+
+
+ELECT Product_Name,
+       MAX(Category)               AS category,
+       MAX(Sub_Category)           AS sub_category,
+       COUNT(*)                    AS orders,
+       ROUND(SUM(Sales), 2)        AS sales,
+       ROUND(SUM(Profit), 2)       AS total_loss,
+       ROUND(SUM(Profit) / COUNT(*), 2) AS loss_per_order,
+       ROUND(AVG(Discount) * 100, 1)    AS avg_discount_pct
+FROM superstore
+GROUP BY Product_Name
+HAVING SUM(Profit) < 0
+ORDER BY total_loss
+LIMIT 10;
+ 
+-- 6b. Common category among the top 10 losers
+SELECT category,
+       COUNT(*) AS products_in_top10,
+       ROUND(SUM(total_loss), 2) AS combined_loss
+FROM (
+    SELECT Product_Name,
+           MAX(Category)   AS category,
+           SUM(Profit)     AS total_loss
+    FROM superstore
+    GROUP BY Product_Name
+    HAVING SUM(Profit) < 0
+    ORDER BY total_loss
+    LIMIT 10
+) t
+GROUP BY category
+ORDER BY products_in_top10 DESC;
+ 
+-- 6c. Common discount level: loss-making ORDER LINES from the top 10 losing products
+SELECT s.Discount_Bucket,
+       COUNT(*)                AS order_lines,
+       ROUND(SUM(s.Profit), 2) AS profit
+FROM superstore s
+JOIN (
+    SELECT Product_Name
+    FROM (
+        SELECT Product_Name, SUM(Profit) AS total_loss
+        FROM superstore
+        GROUP BY Product_Name
+        HAVING SUM(Profit) < 0
+        ORDER BY total_loss
+        LIMIT 10
+    ) x
+) top10 ON s.Product_Name = top10.Product_Name
+GROUP BY s.Discount_Bucket
+ORDER BY profit;
+ 
+-- 6d. Common region: where do the top 10 losers lose money?
+SELECT s.Region,
+       COUNT(*)                AS order_lines,
+       ROUND(SUM(s.Profit), 2) AS profit
+FROM superstore s
+JOIN (
+    SELECT Product_Name
+    FROM (
+        SELECT Product_Name, SUM(Profit) AS total_loss
+        FROM superstore
+        GROUP BY Product_Name
+        HAVING SUM(Profit) < 0
+        ORDER BY total_loss
+        LIMIT 10
+    ) x
+) top10 ON s.Product_Name = top10.Product_Name
+GROUP BY s.Region
+ORDER BY profit;
+ 
