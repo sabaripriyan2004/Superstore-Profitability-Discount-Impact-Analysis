@@ -1,4 +1,4 @@
-Which product categories and sub-categories are the most profitable, and which are consistently losing money?
+
 SELECT Category,
        COUNT(*)                AS orders,
        ROUND(SUM(Sales), 2)    AS sales,
@@ -53,7 +53,6 @@ HAVING loss_years > 0
 ORDER BY loss_years DESC, Sub_Category;
 -- If loss_years = years_with_data, it lost money every single year.
 
-Which regions and states generate the highest profit, and which are reducing overall profitability?
 
 SELECT Region,
        COUNT(*)                AS orders,
@@ -107,7 +106,6 @@ WHERE State IN ('Texas', 'Ohio', 'Pennsylvania', 'Illinois')
 GROUP BY State
 ORDER BY profit;
 
-Is there a relationship between discount percentage and profit? At what discount level does profitability become negative?
 
 SELECT Discount_Bucket,
        COUNT(*)                AS orders,
