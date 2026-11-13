@@ -1,1 +1,147 @@
+Which product categories and sub-categories are the most profitable, and which are consistently losing money?
+
+SELECT
+    Category,
+    Sub_Category,
+    COUNT(DISTINCT Product_ID) AS Total_Products,
+    SUM(Quantity) AS Total_Quantity_Sold,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Profit) AS Average_Profit,
+    AVG(Discount) AS Average_Discount,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage
+FROM Superstore
+GROUP BY
+    Category,
+    Sub_Category
+ORDER BY
+    Total_Profit DESC;
+
+Which regions and states generate the highest profit, and which are reducing overall profitability?
+
+SELECT
+    Region,
+    State,
+    City,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    COUNT(DISTINCT Customer_ID) AS Total_Customers,
+    SUM(Quantity) AS Total_Quantity,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Profit) AS Average_Profit,
+    AVG(Discount) AS Average_Discount,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage
+FROM Superstore
+GROUP BY
+    Region,
+    State,
+    City
+ORDER BY
+    Total_Profit DESC;
+
+Is there a relationship between discount percentage and profit? At what discount level does profitability become negative?
+
+SELECT
+    Discount,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    SUM(Quantity) AS Total_Quantity,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Sales) AS Average_Sales,
+    AVG(Profit) AS Average_Profit,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage,
+    CASE
+        WHEN SUM(Profit) > 0 THEN 'Profitable'
+        WHEN SUM(Profit) < 0 THEN 'Loss Making'
+        ELSE 'Break Even'
+    END AS Profitability_Status
+FROM Superstore
+GROUP BY
+    Discount
+ORDER BY
+    Discount ASC; 
+
+Which customer segments are the most and least profitable?
+
+SELECT
+    Segment,
+    COUNT(DISTINCT Customer_ID) AS Total_Customers,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    SUM(Quantity) AS Total_Quantity,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Sales) AS Average_Sales,
+    AVG(Profit) AS Average_Profit,
+    AVG(Discount) AS Average_Discount,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage
+FROM Superstore
+GROUP BY
+    Segment
+ORDER BY
+    Total_Profit DESC;
+
+Does shipping mode have a noticeable relationship with profit margins?
+
+SELECT
+    Ship_Mode,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    COUNT(DISTINCT Customer_ID) AS Total_Customers,
+    SUM(Quantity) AS Total_Quantity,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Sales) AS Average_Sales,
+    AVG(Profit) AS Average_Profit,
+    AVG(Discount) AS Average_Discount,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage,
+    CASE
+        WHEN SUM(Profit) > 0 THEN 'Profitable'
+        WHEN SUM(Profit) < 0 THEN 'Loss Making'
+        ELSE 'Break Even'
+    END AS Profitability_Status
+FROM Superstore
+GROUP BY
+    Ship_Mode
+ORDER BY
+    Total_Profit DESC;
+
+What are the top 10 loss-making products, and what do they have in common in terms of category, discount level, and region?
+SELECT
+    Product_ID,
+    Product_Name,
+    Category,
+    Sub_Category,
+    Region,
+    State,
+    COUNT(DISTINCT Order_ID) AS Total_Orders,
+    SUM(Quantity) AS Total_Quantity_Sold,
+    SUM(Sales) AS Total_Sales,
+    SUM(Profit) AS Total_Profit,
+    AVG(Discount) AS Average_Discount,
+    AVG(Profit) AS Average_Profit,
+    ROUND(
+        SUM(Profit) / NULLIF(SUM(Sales), 0) * 100, 2
+    ) AS Profit_Margin_Percentage
+FROM Superstore
+GROUP BY
+    Product_ID,
+    Product_Name,
+    Category,
+    Sub_Category,
+    Region,
+    State
+HAVING
+    SUM(Profit) < 0
+ORDER BY
+    Total_Profit ASC
+LIMIT 10;
 
